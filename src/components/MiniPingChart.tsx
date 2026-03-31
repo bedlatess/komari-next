@@ -6,6 +6,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartLegend,
+  ChartLegendContent,
 } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 import { useTranslation } from "react-i18next";
@@ -156,15 +157,13 @@ const MiniPingChart = ({
   const chartConfig = useMemo(() => {
     const config: Record<string, any> = {};
     tasks.forEach((task, idx) => {
-      const lossText = typeof task.loss === 'number' ? `${task.loss.toFixed(1)}%` : 'N/A';
-      const volText = typeof task.p99_p50_ratio === 'number' ? task.p99_p50_ratio.toFixed(1) : 'N/A';
       config[task.id] = {
-        label: `${task.name} (${lossText} ${t('chart.lossRate')} / ${volText} ${t('chart.volatility')})`,
+        label: task.name,
         color: colors[idx % colors.length],
       };
     });
     return config;
-  }, [tasks, t]);
+  }, [tasks]);
 
   const CustomTooltip = useCallback(({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
@@ -219,7 +218,10 @@ const MiniPingChart = ({
   }, []);
 
   return (
-    <Card style={{ width, height: 'auto', minHeight: height }} className="flex flex-col p-3 gap-2">
+    <Card
+      style={{ width, maxWidth: "100%", height: 'auto', minHeight: height }}
+      className="flex w-full min-w-0 max-w-full flex-col gap-2 overflow-hidden p-3"
+    >
       {loading && (
         <div
           className="w-full flex-grow flex items-center justify-center"
@@ -243,7 +245,11 @@ const MiniPingChart = ({
       ) : (
         !loading &&
         !error && (
-          <ChartContainer config={chartConfig} className="w-full" style={{ height: typeof height === 'number' ? `${height - 80}px` : '220px' }}>
+          <ChartContainer
+            config={chartConfig}
+            className="w-full min-w-0 max-w-full overflow-hidden"
+            style={{ height: typeof height === 'number' ? `${height - 80}px` : '220px' }}
+          >
             <LineChart
               data={chartData}
               accessibilityLayer
@@ -272,7 +278,12 @@ const MiniPingChart = ({
                 cursor={false}
                 content={<CustomTooltip />}
               />
-              <ChartLegend onClick={handleLegendClick} />
+              <ChartLegend
+                onClick={handleLegendClick}
+                content={
+                  <ChartLegendContent className="flex-wrap justify-start gap-x-3 gap-y-2 text-xs" />
+                }
+              />
               {(() => {
                 const minInterval = Math.min(
                   ...tasks

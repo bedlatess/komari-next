@@ -155,11 +155,12 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
   });
 
   const showPriceColumn = nodes.some(node => node.price !== 0);
+  const tableColumnCount = showPriceColumn ? 10 : 9;
 
   return (
     <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
-        <Table className="min-w-max">
+        <Table className="w-full min-w-[1094px] table-fixed">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-[30px] px-2"></TableHead>
@@ -184,7 +185,7 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
                 </Flex>
               </TableHead>
               <TableHead
-                className="min-w-[90px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
+                className="w-[120px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
                 onClick={handleSort('status')}
                 title={t("nodeCard.sortTooltip")}
               >
@@ -225,7 +226,7 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
               </TableHead>
               {showPriceColumn &&
                 <TableHead
-                  className="min-w-[100px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
+                  className="w-[100px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
                   onClick={handleSort('price')}
                   title={t("nodeCard.sortTooltip")}
                 >
@@ -236,7 +237,7 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
                 </TableHead>
               }
               <TableHead
-                className="min-w-[140px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
+                className="w-[140px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
                 onClick={handleSort('networkUp')}
                 title={t("nodeCard.sortTooltip")}
               >
@@ -246,7 +247,7 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
                 </Flex>
               </TableHead>
               <TableHead
-                className="min-w-[140px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
+                className="w-[140px] cursor-pointer hover:bg-muted/50 transition-colors text-center px-2"
                 onClick={handleSort('totalUp')}
                 title={t("nodeCard.sortTooltip")}
               >
@@ -406,8 +407,8 @@ const NodeTable: React.FC<NodeTableProps> = ({ nodes, liveData }) => {
 
                 {isExpanded && (
                   <TableRow className="bg-muted/30 hover:bg-muted/30">
-                    <TableCell colSpan={10} className="p-0">
-                      <div className="px-4 py-6 md:px-8 md:py-8">
+                    <TableCell colSpan={tableColumnCount} className="max-w-0 p-0">
+                      <div className="w-full max-w-full overflow-hidden px-4 py-6 md:px-8 md:py-8">
                         <ExpandedNodeDetails node={node} nodeData={nodeData} />
                       </div>
                     </TableCell>
@@ -430,11 +431,11 @@ interface ExpandedNodeDetailsProps {
 
 const ExpandedNodeDetails: React.FC<ExpandedNodeDetailsProps> = ({ node }) => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="bg-card rounded-lg p-5 border border-border/60 shadow-sm hover:shadow-md transition-shadow min-w-0">
+    <div className="flex w-full min-w-0 max-w-full flex-col gap-6 overflow-hidden">
+      <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-border/60 bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
         <DetailsGrid uuid={node.uuid} />
       </div>
-      <div className="bg-card rounded-lg p-5 border border-border/60 shadow-sm hover:shadow-md transition-shadow min-w-0">
+      <div className="min-w-0 max-w-full overflow-hidden rounded-lg border border-border/60 bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
         <MiniPingChart hours={24} uuid={node.uuid} />
       </div>
     </div>
