@@ -56,6 +56,25 @@ export default function DashboardContent() {
   //#region 节点数据
   const { nodeList, isLoading, error, refresh } = useNodeList();
 
+  const renderTrafficPair = (up: string, down: string) => {
+    if (themeConfig.cardLayout === "modern") {
+      return (
+        <div className="flex items-center gap-2 whitespace-nowrap">
+          <span>↑ {up}</span>
+          <span className="text-muted-foreground">/</span>
+          <span>↓ {down}</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex flex-col">
+        <div>↑ {up}</div>
+        <div>↓ {down}</div>
+      </div>
+    );
+  };
+
   // Status cards visibility state
   const [statusCardsVisibility, setStatusCardsVisibility] = useLocalStorage(
     "statusCardsVisibility",
@@ -109,12 +128,7 @@ export default function DashboardContent() {
       renderValue: () => {
         const data = live_data?.data?.data;
         const online = live_data?.data?.online;
-        if (!data || !online) return (
-          <div className="flex flex-col">
-            <div>↑ 0B</div>
-            <div>↓ 0B</div>
-          </div>
-        );
+        if (!data || !online) return renderTrafficPair("0 B", "0 B");
         const onlineSet = new Set(online);
         const values = Object.entries(data)
           .filter(([uuid]) => onlineSet.has(uuid))
@@ -127,12 +141,7 @@ export default function DashboardContent() {
           (acc, node) => acc + (node.network.totalDown || 0),
           0
         );
-        return (
-          <div className="flex flex-col">
-            <div>↑ {formatBytes(up)}</div>
-            <div>↓ {formatBytes(down)}</div>
-          </div>
-        );
+        return renderTrafficPair(formatBytes(up), formatBytes(down));
       },
       visible: statusCardsVisibility.trafficOverview,
     },
@@ -143,12 +152,7 @@ export default function DashboardContent() {
       renderValue: () => {
         const data = live_data?.data?.data;
         const online = live_data?.data?.online;
-        if (!data || !online) return (
-          <div className="flex flex-col">
-            <div>↑ 0 B/s</div>
-            <div>↓ 0 B/s</div>
-          </div>
-        );
+        if (!data || !online) return renderTrafficPair("0 B/s", "0 B/s");
         const onlineSet = new Set(online);
         const values = Object.entries(data)
           .filter(([uuid]) => onlineSet.has(uuid))
@@ -161,12 +165,7 @@ export default function DashboardContent() {
           (acc, node) => acc + (node.network.down || 0),
           0
         );
-        return (
-          <div className="flex flex-col">
-            <div>↑ {formatSpeed(up)}</div>
-            <div>↓ {formatSpeed(down)}</div>
-          </div>
-        );
+        return renderTrafficPair(formatSpeed(up), formatSpeed(down));
       },
       visible: statusCardsVisibility.networkSpeed,
     },
@@ -226,7 +225,7 @@ export default function DashboardContent() {
 
         <div className={`grid ${
           themeConfig.cardLayout === 'classic' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4' :
-          themeConfig.cardLayout === 'modern' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3' :
+          themeConfig.cardLayout === 'modern' ? 'grid-cols-1 gap-3 md:grid-cols-2 md:auto-rows-[96px] xl:grid-cols-3' :
           themeConfig.cardLayout === 'minimal' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3' :
           themeConfig.cardLayout === 'detailed' ? 'grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4' :
           'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4'
@@ -304,7 +303,7 @@ const TopCard: React.FC<TopCardProps> = ({ title, value, description, icon, layo
   // Modern layout: Horizontal with icon on left
   if (layout === 'modern') {
     return (
-      <Card className="overflow-hidden border-none shadow-sm bg-gradient-to-br from-card to-card/50 hover:shadow-md transition-all duration-200">
+      <Card className="h-full overflow-hidden border-none shadow-sm bg-gradient-to-br from-card to-card/50 hover:shadow-md transition-all duration-200">
         {/* Mobile: compact single line */}
         <CardContent className="p-3 md:hidden">
           <div className="flex items-center justify-between gap-2">
@@ -325,13 +324,13 @@ const TopCard: React.FC<TopCardProps> = ({ title, value, description, icon, layo
                 {icon}
               </div>
             </div>
-            <div className="flex-1 p-3 flex flex-col justify-center min-w-0">
-              <div className="text-[9px] font-semibold text-primary uppercase tracking-wider mb-1">
+            <div className="flex-1 p-2.5 flex flex-col justify-center min-w-0">
+              <div className="text-[9px] font-semibold text-primary uppercase tracking-wider mb-0.5">
                 {title}
               </div>
-              <div className="text-lg font-bold leading-tight mb-0.5 line-clamp-2">{value}</div>
+              <div className="text-lg font-bold leading-tight line-clamp-2 [&>div]:space-y-0.5">{value}</div>
               {description && (
-                <div className="text-xs text-muted-foreground">
+                <div className="mt-0.5 text-xs text-muted-foreground">
                   {description}
                 </div>
               )}
