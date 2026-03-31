@@ -58,6 +58,32 @@ function getTrafficPercentage(totalUp: number, totalDown: number, limit: number,
   }
 }
 
+function getTrafficUsed(totalUp: number, totalDown: number, type: "max" | "min" | "sum" | "up" | "down") {
+  switch (type) {
+    case "max":
+      return Math.max(totalUp, totalDown);
+    case "min":
+      return Math.min(totalUp, totalDown);
+    case "sum":
+      return totalUp + totalDown;
+    case "up":
+      return totalUp;
+    case "down":
+      return totalDown;
+    default:
+      return 0;
+  }
+}
+
+function formatTrafficPercentage(value: number): string {
+  if (!Number.isFinite(value) || value <= 0) return "0%";
+  if (value >= 100) return `${value.toFixed(1)}%`;
+  if (value >= 10) return `${value.toFixed(1)}%`;
+  if (value >= 1) return `${value.toFixed(2)}%`;
+  if (value >= 0.01) return `${value.toFixed(3)}%`;
+  return "<0.01%";
+}
+
 // --- Components ---
 
 interface NodeProps {
@@ -95,6 +121,18 @@ const Node = ({ basic, live, online }: NodeProps) => {
   const downloadSpeed = formatBytes(liveData.network.down);
   const totalUpload = formatBytes(liveData.network.totalUp);
   const totalDownload = formatBytes(liveData.network.totalDown);
+  const trafficLimitType = basic.traffic_limit_type ?? "sum";
+  const trafficUsed = getTrafficUsed(
+    liveData.network.totalUp,
+    liveData.network.totalDown,
+    trafficLimitType
+  );
+  const trafficPercentage = getTrafficPercentage(
+    liveData.network.totalUp,
+    liveData.network.totalDown,
+    basic.traffic_limit,
+    trafficLimitType
+  );
 
   // Layout-specific styles
   const cardStyles = {
@@ -265,14 +303,19 @@ const Node = ({ basic, live, online }: NodeProps) => {
           {basic.traffic_limit > 0 && (
             <div className="mt-2 pt-1">
                <div className="flex justify-between text-[10px] mb-1 text-muted-foreground">
-                 <span>{basic.traffic_limit_type && basic.traffic_limit_type.toUpperCase()} Limit</span>
-                 <span>{formatBytes(basic.traffic_limit)}</span>
+                 <span>{trafficLimitType.toUpperCase()} Limit</span>
+                 <span className="font-mono">
+                   {formatBytes(trafficUsed)} / {formatBytes(basic.traffic_limit)}
+                 </span>
                </div>
                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
                  <div 
                    className="h-full bg-primary/70 rounded-full"
-                   style={{ width: `${Math.min(getTrafficPercentage(liveData.network.totalUp, liveData.network.totalDown, basic.traffic_limit, basic.traffic_limit_type ?? "sum"), 100)}%` }}
+                   style={{ width: `${Math.min(trafficPercentage, 100)}%` }}
                  />
+               </div>
+               <div className="mt-1 flex justify-end text-[10px] font-mono text-muted-foreground">
+                 <span>{formatTrafficPercentage(trafficPercentage)}</span>
                </div>
             </div>
           )}
