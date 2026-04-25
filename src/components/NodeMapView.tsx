@@ -66,12 +66,6 @@ function getRegionStatusBadgeClass(status: "online" | "offline" | "partial") {
   }
 }
 
-function getNodeStatusBadgeClass(online: boolean) {
-  return online
-    ? "bg-emerald-500/12 text-emerald-700 dark:bg-emerald-500/18 dark:text-emerald-300"
-    : "bg-rose-500/12 text-rose-700 dark:bg-rose-500/18 dark:text-rose-300";
-}
-
 export function NodeMapView({
   nodes,
   liveData,
@@ -88,7 +82,6 @@ export function NodeMapView({
   const hoverPosition = hoveredRegion
     ? pendingHoverPositionRef.current ?? hoveredRegion
     : null;
-  const onlineNodeIds = useMemo(() => new Set(liveData?.online ?? []), [liveData?.online]);
 
   const activeRegionsByMapName = useMemo(
     () => new Map(summary.regions.map((region) => [region.mapName, region])),
@@ -416,11 +409,13 @@ export function NodeMapView({
                           {hoverRegion.total}
                           <span>{t("mapView.stats.nodes", { defaultValue: "Nodes" })}</span>
                         </span>
-                        <span className="node-map-view__hover-count node-map-view__hover-count--online">
-                          {hoverRegion.online} {t("nodeCard.online", { defaultValue: "Online" })}
-                        </span>
-                        <span className="node-map-view__hover-count node-map-view__hover-count--offline">
-                          {hoverRegion.offline} {t("nodeCard.offline", { defaultValue: "Offline" })}
+                        <span className="node-map-view__hover-status-counts">
+                          <span className="node-map-view__hover-count node-map-view__hover-count--online">
+                            {hoverRegion.online} {t("nodeCard.online", { defaultValue: "Online" })}
+                          </span>
+                          <span className="node-map-view__hover-count node-map-view__hover-count--offline">
+                            {hoverRegion.offline} {t("nodeCard.offline", { defaultValue: "Offline" })}
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -432,33 +427,6 @@ export function NodeMapView({
                   >
                     {getStatusText(t, hoverRegion.status)}
                   </Badge>
-                </div>
-
-                <div className="node-map-view__node-list node-map-view__hover-node-list">
-                  {hoverRegion.nodes.map((node) => {
-                    const online = onlineNodeIds.has(node.uuid);
-                    const secondaryText =
-                      node.group?.trim() || t("mapView.unclassified", { defaultValue: "Unclassified" });
-
-                    return (
-                      <div key={node.uuid} className="node-map-view__node-card bg-card/80">
-                        <div className="min-w-0 text-left">
-                          <div className="truncate font-medium text-foreground">{node.name}</div>
-                          <div className="truncate text-xs text-muted-foreground">
-                            {secondaryText}
-                          </div>
-                        </div>
-                        <Badge
-                          variant="secondary"
-                          className={`shrink-0 whitespace-nowrap rounded-full ${getNodeStatusBadgeClass(online)}`}
-                        >
-                          {online
-                            ? t("nodeCard.online", { defaultValue: "Online" })
-                            : t("nodeCard.offline", { defaultValue: "Offline" })}
-                        </Badge>
-                      </div>
-                    );
-                  })}
                 </div>
               </div>
             )}
