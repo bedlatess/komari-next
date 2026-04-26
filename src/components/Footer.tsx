@@ -66,7 +66,7 @@ const Footer = () => {
                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
               >
                 <Github className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                <span className="font-medium">PAWN System</span>
+                <span className="font-medium">Server Status</span>
               </a>
               <div className="flex items-center gap-1 text-xs text-muted-foreground justify-center">
                 <span>Created with</span>
