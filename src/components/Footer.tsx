@@ -60,7 +60,7 @@ const Footer = () => {
             <h4 className="text-sm font-semibold text-foreground">Powered By</h4>
             <div className="flex flex-col items-center gap-2 text-center">
               <a
-                href="#" 
+                href="https://tz.pawn.eu.org" 
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors group"
@@ -80,6 +80,12 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-end gap-3">
             <h4 className="text-sm font-semibold text-foreground">Version Info</h4>
             <div className="flex flex-col gap-1.5 text-xs text-muted-foreground text-center md:text-right">
+              {/* 新增的自定义版本号 */}
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-foreground">Release:</span>
+                <span className="font-mono text-primary">v1.2</span>
+              </div>
+
               {buildTime && (
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-foreground">Build:</span>
