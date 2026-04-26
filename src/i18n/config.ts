@@ -4,6 +4,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./locales/en.json";
 import zh_CN from "./locales/zh_CN.json";
 import zh_TW from "./locales/zh_TW.json";
+import de from "./locales/de.json"; // 1. 引入你刚刚创建的德语 JSON
 
 // not adding the name field will hide the language from the language switcher menu
 const resources = {
@@ -17,6 +18,15 @@ const resources = {
   "en-GB": {
     translation: en,
   },
+  // --- 2. 在这里添加德语配置 ---
+  de: {
+    translation: de,
+    name: "Deutsch", // 带有 name 字段，菜单里就会出现 "Deutsch (de)"
+  },
+  "de-DE": {
+    translation: de,
+  },
+  // ---------------------------
   zh: {
     translation: zh_CN,
   },
