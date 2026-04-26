@@ -3,9 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRPC2Call } from '@/contexts/RPC2Context';
 import { Github, Heart, Server } from 'lucide-react';
+import { useTranslation } from "react-i18next"; // 引入国际化 Hook
 import themeMetadata from '../../komari-theme.json';
 
 const Footer = () => {
+  const { t } = useTranslation(); // 初始化翻译函数 t
+  
   const formatBuildTime = (isoString: string) => {
     const date = new Date(isoString);
     return date.toLocaleString('zh-CN', {
@@ -57,7 +60,8 @@ const Footer = () => {
 
           {/* 中间链接区 */}
           <div className="flex flex-col items-center gap-3">
-            <h4 className="text-sm font-semibold text-foreground">Powered By</h4>
+            {/* 使用 t 函数进行翻译 */}
+            <h4 className="text-sm font-semibold text-foreground">{t('footer.powered_by')}</h4>
             <div className="flex flex-col items-center gap-2 text-center">
               <a
                 href="https://tz.pawn.eu.org" 
@@ -78,28 +82,32 @@ const Footer = () => {
 
           {/* 右侧版本信息 */}
           <div className="flex flex-col items-center md:items-end gap-3">
-            <h4 className="text-sm font-semibold text-foreground">Version Info</h4>
+            {/* 翻译：版本信息 */}
+            <h4 className="text-sm font-semibold text-foreground">{t('footer.version_info')}</h4>
             <div className="flex flex-col gap-1.5 text-xs text-muted-foreground text-center md:text-right">
-              {/* 新增的自定义版本号 */}
               <div className="flex items-center gap-2">
-                <span className="font-medium text-foreground">Release:</span>
+                {/* 翻译：发布版本 */}
+                <span className="font-medium text-foreground">{t('footer.release')}:</span>
                 <span className="font-mono text-primary">v1.2</span>
               </div>
 
               {buildTime && (
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-foreground">Build:</span>
+                  <span className="font-medium text-foreground">{t('footer.build')}:</span>
                   <span>{formatBuildTime(buildTime)}</span>
                 </div>
               )}
+              
               {versionInfo && (
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">Version:</span>
+                    {/* 翻译：版本 */}
+                    <span className="font-medium text-foreground">{t('footer.version')}:</span>
                     <span className="font-mono">{versionInfo.version}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium text-foreground">Theme:</span>
+                    {/* 翻译：主题 */}
+                    <span className="font-medium text-foreground">{t('footer.theme')}:</span>
                     <span className="font-mono">{themeMetadata.version}</span>
                   </div>
                 </div>
