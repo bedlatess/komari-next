@@ -1,0 +1,13 @@
+{
+  "name": "Deutsch",
+  "footer": {
+    "powered_by": "Präsentiert von",
+    "version_info": "Versionsinfo",
+    "build": "Build",
+    "release": "Freigabe"
+  },
+  "status": {
+    "online": "Online",
+    "offline": "Offline"
+  }
+}
